@@ -27,6 +27,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+
+        $user = User::where('username', $credentials['username'])->get()->first();
+        if (!$user || $user->role != 1) {
+            return back()->with('signin_error', 'Only admin can access this system');
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
