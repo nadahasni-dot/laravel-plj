@@ -22,12 +22,14 @@ use Illuminate\Support\Facades\Route;
 Route::resource('/', HomeController::class);
 
 // AUTH
-Route::get('/auth', AuthController::class);
+Route::get('/auth', AuthController::class)->name('auth');
 Route::post('/auth', [AuthController::class, 'authenticate']);
 
-Route::get('/auth/signup', [AuthController::class, 'signup']);
+Route::get('/auth/signup', [AuthController::class, 'signup'])->name('signup');
 Route::post('/auth/signup', [AuthController::class, 'store']);
 
+Route::post('/auth/signout', [AuthController::class, 'signout'])->name('signout');
+
 // DASHBOARD
-Route::resource('/dashboard', DashboardController::class);
-Route::resource('/user', ManagementUserController::class);
+Route::resource('/admin/dashboard', DashboardController::class)->middleware('auth');
+Route::resource('/admin/user', ManagementUserController::class)->middleware('auth');

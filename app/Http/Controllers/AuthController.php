@@ -35,6 +35,17 @@ class AuthController extends Controller
         return back()->with('signin_error', 'Login Failed');
     }
 
+    public function signout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/auth');
+    }
+
     public function signup(Request $request)
     {
         return view('backend.signup');
