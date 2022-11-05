@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ManagementUserController;
@@ -16,9 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [ManagementUserController::class, 'index']);
+// Route::get('/', [ManagementUserController::class, 'index']);
 
-Route::resource('home', HomeController::class);
-Route::resource('dashboard', DashboardController::class);
+Route::resource('/', HomeController::class);
 
-Route::resource('user', ManagementUserController::class);
+// AUTH
+Route::get('/auth', AuthController::class);
+Route::post('/auth', [AuthController::class, 'authenticate']);
+
+Route::get('/auth/signup', [AuthController::class, 'signup']);
+Route::post('/auth/signup', [AuthController::class, 'store']);
+
+// DASHBOARD
+Route::resource('/dashboard', DashboardController::class);
+Route::resource('/user', ManagementUserController::class);
