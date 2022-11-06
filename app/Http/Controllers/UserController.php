@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -14,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('backend.master_data.index', [
+        return view('backend.master_data.users.index', [
             'users' => User::where('role', 2)->get(),
         ]);
     }
@@ -26,7 +27,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.master_data.users.create');
     }
 
     /**
@@ -37,7 +38,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|min:3|max:100',
+            'email' => 'required|min:10|max:100|unique:users|email:dns',
+            'username' => 'required|min:3|max:100|unique:users',
+            'password' => 'required|min:6|max:100|'
+        ]);
+
+        // encrypt password to hash
+        $validatedData['password'] = Hash::make($validatedData['password']);
+
+        User::create($validatedData);
+        return redirect('/admin/users')->with('success', 'User created successfully');
     }
 
     /**
@@ -59,7 +71,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        dd($user);
+        return view('backend.master_data.users.edit', [
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -71,7 +85,35 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $rules = [
+            'name' => 'required|min:3|max:100',
+        ];
+
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|min:10|max:100|unique:users|email:dns';
+        }
+
+        if ($request->username != $user->username) {
+            $rules['username'] = 'required|min:3|max:100|unique:users';
+        }
+
+        if ($request->has('password')) {
+            $rules['password'] = 'nullable|min:6|max:100';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        if ($validatedData['password'] != '') {
+            // encrypt password to hash
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        } else {
+            $validatedData['password'] = $user->password;
+        }
+
+        User::where('id', $user->id)
+            ->update($validatedData);
+
+        return redirect('/admin/users')->with('success', 'User updated succesfully.');
     }
 
     /**

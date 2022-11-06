@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
                     <li class="breadcrumb-item">Master Data</li>
-                    <li class="breadcrumb-item active">Data</li>
+                    <li class="breadcrumb-item active">Users</li>
                 </ol>
             </nav>
         </div>
@@ -17,7 +17,10 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Users Data</h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Users Data</h5>
+                                <a href="/admin/users/create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Create User</a>
+                            </div>
                             @if (session()->has('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     {{ session('success') }}

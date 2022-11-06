@@ -20,13 +20,14 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', [ManagementUserController::class, 'index']);
 
 Route::resource('/', HomeController::class);
+Route::resource('/home', HomeController::class);
 
 // AUTH
-Route::get('/auth', AuthController::class)->name('auth');
-Route::post('/auth', [AuthController::class, 'authenticate']);
+Route::get('/auth', AuthController::class)->name('auth')->middleware('guest');
+Route::post('/auth', [AuthController::class, 'authenticate'])->middleware('guest');
 
-Route::get('/auth/signup', [AuthController::class, 'signup'])->name('signup');
-Route::post('/auth/signup', [AuthController::class, 'store']);
+Route::get('/auth/signup', [AuthController::class, 'signup'])->name('signup')->middleware('guest');
+Route::post('/auth/signup', [AuthController::class, 'store'])->middleware('guest');
 
 Route::post('/auth/signout', [AuthController::class, 'signout'])->name('signout');
 
