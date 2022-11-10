@@ -14,7 +14,11 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        return Mahasiswa::all()->toJson();
+        return response()->json([
+            'success' => true,
+            'message' => 'get mahasiswa list success',
+            'data' => Mahasiswa::orderByDesc('created_at')->get(),
+        ], 200);
     }
 
     /**
@@ -35,7 +39,21 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|min:3|max:100',
+            'nim' => 'required|min:6|max:10|unique:mahasiswa',
+            'angkatan' => 'required|min:4|max:4',
+            'jurusan' => 'required|min:6|max:100'
+        ]);
+
+        Mahasiswa::create($validatedData);
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Create Mahasiswa Success',
+            ],
+            201
+        );
     }
 
     /**
@@ -46,7 +64,11 @@ class MahasiswaController extends Controller
      */
     public function show(Mahasiswa $mahasiswa)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'User found',
+            'data' => $mahasiswa,
+        ], 200);
     }
 
     /**
@@ -69,7 +91,25 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
-        //
+        $rules = [
+            'name' => 'required|min:3|max:100',
+            'angkatan' => 'required|min:4|max:4',
+            'jurusan' => 'required|min:6|max:100'
+        ];
+
+        if ($request->nim != $mahasiswa->nim) {
+            $rules['nim'] = 'required|min:6|max:10|unique:mahasiswa';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        Mahasiswa::where('id', $mahasiswa->id)
+            ->update($validatedData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Update mahasiswa success',
+        ], 200);
     }
 
     /**
@@ -80,6 +120,10 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-        //
+        Mahasiswa::destroy($mahasiswa->id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Mahasiswa Deleted Successfully',
+        ], 200);
     }
 }

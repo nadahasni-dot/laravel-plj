@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         return view('backend.master_data.users.index', [
-            'users' => User::where('role', 2)->get(),
+            'users' => User::where('role', 2)->orderByDesc('created_at')->get(),
         ]);
     }
 
