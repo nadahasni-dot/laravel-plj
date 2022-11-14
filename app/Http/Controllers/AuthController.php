@@ -90,7 +90,7 @@ class AuthController extends Controller
                     'data' => $user,
                     'token' => $token,
                 ],
-                201
+                200
             );
         }
 
